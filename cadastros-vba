@@ -1,0 +1,65 @@
+Private Sub BotaoCadastro_Click()
+
+' Código exclusivo para um botão "Cadastrar" no formulário
+' Roda após o usuário digitar os dados solicitados nas entradas de texto
+
+    Range("a1048576").Select                            ' Vai para a última célula da primeira coluna da planilha
+    Selection.End(xlUp).Select                          ' Vai para a última célula preenchida da primeira coluna
+    
+    ActiveCell.Offset(1, 0).Select                      ' Desce uma célula abaixo (a primeira vazia na primeira coluna)
+    
+    ActiveCell.Value = input_nome                       ' Célula vazia recebe o nome digitado no input do formulário
+    
+    ActiveCell.Offset(0, 1).Value = input_end           ' A seleção se desloca 1 coluna para o lado direito e recebe o endereço
+    
+    ActiveCell.Offset(0, 2).Value = input_cel           ' A seleção se desloca 2 colunas para o lado direito e recebe o telefone               
+ 
+    input_nome = ""                                     ' Limpa a entrada de texto de nome do formulário
+    input_end = ""                                      ' Limpa a entrada de texto de endereço do formulário
+    input_cel = ""                                      ' Limpa a entrada de texto de telefone do formulário
+    
+End Sub
+
+______________________________________________________________________________________________________________________________________________________________________________________
+
+Sub CadastroVendas()
+
+' Código que usa 3 planilhas:
+' "Entrada - Controle" = planilha para coletar os dados da venda
+' "Relatório" = planilha com todos os cadastros efetuados (banco de dados)
+' "Cadastro" = planilha com os dados de todos os produtos, onde são puxados para a planilha de entrada
+
+    Application.ScreenUpdating = False                                                                            ' Desliga a atualização de tela
+
+' Simplifica o nome das Abas para ser mais fácil de citar ao longo do código
+    Set rel = Worksheets("Relatório")
+    Set ctl = Worksheets("Entrada - Controle")
+    
+' ### O If a seguir faz a inserção dos dados no Relatório ###
+    
+    If Cells(8, 1) = "" Or Cells(8, 2) = "" Or Cells(8, 3) = "" Then                                           ' Verifica se há algum campo vazio
+        
+        MsgBox "Preencha todos os campos", vbOKOnly + vbInformation, "Lojas Git"
+    
+    Else
+    
+        Range("a8:e8").Select                                           ' Seleciona um intervalo de células
+        Selection.Copy                                                     ' Selection é a seleção atual
+        
+        rel.Select                                                              ' Clica na aba "Relatório" (variável definida no início)
+        Range("a4").Select                                                ' Seleciona a célula principal da primeira coluna (com título)
+        Selection.End(xlDown).Select                                 ' Vai para a última linha preenchida da primeira coluna
+        ActiveCell.Offset(1, 0).Select                                  ' Desce uma linha
+        Selection.PasteSpecial Paste:=xlPasteValues        ' Código de colar especial = valores
+        
+        ctl.Select                                                              ' Clica na aba "Entrada - Controle" (variável definida no início)
+        Application.CutCopyMode = False                          ' Cancela a seleção como um "Esc"
+        Range("a8:c8").Select
+        Selection.ClearContents                                         ' Limpa os dados na aba de inserção
+        Range("a8").Select                                                ' Seleciona a célula inicial, faciliando a entrada de novos dados
+        
+        MsgBox "Avaliação cadastrada com sucesso!", vbOKOnly + vbInformation, "Lojas Git"
+        
+    End If
+    
+End Sub
